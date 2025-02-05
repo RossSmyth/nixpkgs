@@ -3,7 +3,7 @@
   aiohttp,
   aioresponses,
   buildPythonPackage,
-  fetchPypi,
+  fetchFromGitHub,
   mashumaro,
   orjson,
   pytest-aiohttp,
@@ -17,14 +17,16 @@
 
 buildPythonPackage rec {
   pname = "aiohasupervisor";
-  version = "0.2.2b5";
+  version = "0.3.0";
   pyproject = true;
 
   disabled = pythonOlder "3.12";
 
-  src = fetchPypi {
-    inherit pname version;
-    hash = "sha256-EFVhR7L+1SVzXO4UpDrXA1EuPdeew55CV4ykO3K5BFI=";
+  src = fetchFromGitHub {
+    owner = "home-assistant-libs";
+    repo = "python-supervisor-client";
+    tag = version;
+    hash = "sha256-72YRaTlgRJ8liQ1q+Hx1iCG8Av7wWk61t306fYT9gss=";
   };
 
   postPatch = ''
@@ -56,6 +58,7 @@ buildPythonPackage rec {
   pythonImportsCheck = [ "aiohasupervisor" ];
 
   meta = {
+    changelog = "https://github.com/home-assistant-libs/python-supervisor-client/releases/tag/${src.tag}";
     description = "Client for Home Assistant Supervisor";
     homepage = "https://github.com/home-assistant-libs/python-supervisor-client";
     license = lib.licenses.asl20;
