@@ -4,7 +4,6 @@
   callPackage,
   fetchFromGitHub,
   fetchPypi,
-  fetchpatch2,
   python313,
   substituteAll,
   ffmpeg-headless,
@@ -255,22 +254,6 @@ let
         doCheck = false;
       });
 
-      slack-sdk = super.slack-sdk.overridePythonAttrs (oldAttrs: rec {
-        version = "2.5.0";
-        src = fetchFromGitHub {
-          owner = "slackapi";
-          repo = "python-slackclient";
-          rev = "refs/tags/${version}";
-          hash = "sha256-U//HUe6e41wOOzoaDl4yXPnEASCzpGBIScHStWMN8tk=";
-        };
-        postPatch = ''
-          substituteInPlace setup.py \
-            --replace-fail "pytest-runner" ""
-        '';
-        pythonImportsCheck = [ "slack" ];
-        doCheck = false; # Tests changed a lot for > 3
-      });
-
       vulcan-api = super.vulcan-api.overridePythonAttrs (oldAttrs: rec {
         version = "2.3.2";
         src = fetchFromGitHub {
@@ -320,7 +303,7 @@ let
   extraBuildInputs = extraPackages python.pkgs;
 
   # Don't forget to run update-component-packages.py after updating
-  hassVersion = "2025.1.4";
+  hassVersion = "2025.2.0";
 
 in
 python.pkgs.buildPythonApplication rec {
@@ -341,13 +324,13 @@ python.pkgs.buildPythonApplication rec {
     owner = "home-assistant";
     repo = "core";
     rev = "refs/tags/${version}";
-    hash = "sha256-QqWF/uvFQbf0tdJMzFV3hAt9Je5sFR5z+aAPtCxycbM=";
+    hash = "sha256-TGlfqvmYUPA5wdvZWD89z6lfvDr+K/1kgu6NjkRpNxs=";
   };
 
   # Secondary source is pypi sdist for translations
   sdist = fetchPypi {
     inherit pname version;
-    hash = "sha256-yzX4Wgo468On/WuK32Xdl0O3en/WFRdykvfvHNEU1S0=";
+    hash = "sha256-+dkS6AuqyzvC2NiGCGkDAGxF/kS/LuKkMFXWXjC3I8Y=";
   };
 
   build-system = with python.pkgs; [
@@ -395,12 +378,6 @@ python.pkgs.buildPythonApplication rec {
       src = ./patches/ffmpeg-path.patch;
       ffmpeg = "${lib.getExe ffmpeg-headless}";
     })
-
-    (fetchpatch2 {
-      # python-matter-server 7.0 compat
-      url = "https://github.com/home-assistant/core/commit/ea4931ca3a91920b66a747a18a2dece2c8215d4f.patch";
-      hash = "sha256-evfMdBdEYsVSu2iDZ5xgNTg/QljJ+MXrV69g9liNcN4=";
-    })
   ];
 
   postPatch = ''
@@ -414,6 +391,7 @@ python.pkgs.buildPythonApplication rec {
     aiodns
     aiohasupervisor
     aiohttp
+    aiohttp-asyncmdnsresolver
     aiohttp-cors
     aiohttp-fast-zlib
     aiozoneinfo
