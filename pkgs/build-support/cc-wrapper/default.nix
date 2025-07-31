@@ -119,7 +119,7 @@ let
   targetPrefix = optionalString (targetPlatform != hostPlatform) (targetPlatform.config + "-");
 
   ccVersion = getVersion cc;
-  ccName = removePrefix targetPrefix (getName cc);
+  ccName = args.ccName or removePrefix targetPrefix (getName cc);
 
   libc_bin = optionalString (libc != null) (getBin libc);
   libc_dev = optionalString (libc != null) (getDev libc);

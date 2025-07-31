@@ -138,7 +138,12 @@ let
             ''
               ln -s "${lib.getLib cc}/lib/clang/${clangVersion}/include" "$rsrc"
             ''
-        );
+        )
+        + lib.optionalString stdenv.targetPlatform.isMsvc ''
+            echo "-fuse-ld=lld" >> $out/nix-support/cc-flags
+            echo "-vctoolsdir=${stdenv.libc}/crt"
+            echo "-winsdkdir=${stdenv.libc}/sdk"
+          '';
       mkExtraBuildCommandsBasicRt =
         cc:
         mkExtraBuildCommands0 cc
@@ -209,6 +214,8 @@ let
       clang =
         if stdenv.targetPlatform.libc == null then
           tools.clangNoLibc
+        else if stdenv.targetPlatform.isMsvc then
+          clangCl
         else if stdenv.targetPlatform.useLLVM or false then
           tools.clangUseLLVM
         else if (pkgs.targetPackages.stdenv or args.stdenv).cc.isGNU then
@@ -229,6 +236,14 @@ let
         libcxx = targetLlvmLibraries.libcxx;
         extraPackages = [ targetLlvmLibraries.compiler-rt ];
         extraBuildCommands = mkExtraBuildCommands cc;
+      };
+
+      clangCl = wrapCCWith rec {
+        cc = tools.clang-unwrapped;
+        libcxx = targetLlvmLibraries.libcxx;
+        extraPackages = [ targetLlvmLibraries.compiler-rt ];
+        extraBuildCommands = mkExtraBuildCommands cc;
+        ccName = "clang-cl";
       };
 
       lld = callPackage ./lld {
