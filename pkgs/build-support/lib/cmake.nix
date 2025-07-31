@@ -43,6 +43,9 @@ let
     ++ optionals stdenv.hostPlatform.isStatic [
       "-DCMAKE_LINK_SEARCH_START_STATIC=ON"
     ]
+    ++ optionals (stdenv.hostPlatform.isMsvc) [
+      "-DCMAKE_RC_COMPILER=${stdenv.hostPlatform.config}-llvm-rt"
+    ]
   );
 
   makeCMakeFlags =
