@@ -2,6 +2,8 @@
   lib,
   callPackage,
   makeSetupHook,
+  replaceVars,
+  python3Minimal,
 }:
 
 # See the header comment in ./setup-hook.sh for example usage.
@@ -13,4 +15,7 @@ makeSetupHook {
       directory = ./tests;
     };
   };
-} ./setup-hook.sh
+} (replaceVars ./setup-hook.sh {
+  PYTHON3 = python3Minimal.interpreter;
+  INSTALL_BIN = ./installBin.py;
+})

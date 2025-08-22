@@ -235,22 +235,5 @@ installShellCompletion() {
 #
 # Install each argument to $outputBin
 installBin() {
-    local path
-    for path in "$@"; do
-        if test -z "$path"; then
-            nixErrorLog "${FUNCNAME[0]}: path cannot be empty"
-            return 1
-        fi
-        nixInfoLog "${FUNCNAME[0]}: installing $path"
-
-        local basename
-        # use stripHash in case it's a nix store path
-        basename=$(stripHash "$path")
-
-        local outRoot
-        outRoot=${!outputBin:?}
-
-        local outPath="${outRoot}/bin/$basename"
-        install -D --mode=755 --no-target-directory "$path" "${outRoot}/bin/$basename"
-    done
+  @PYTHON3@ @INSTALL_BIN@ "$@"
 }
