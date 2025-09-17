@@ -2769,5 +2769,6 @@ mapAliases {
     purple-facebook
     ;
 
+  inherit (rescriptPackages) rescript-language-server rewatch;
 }
 // plasma5Throws

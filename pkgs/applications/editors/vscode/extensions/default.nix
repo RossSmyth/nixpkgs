@@ -952,7 +952,7 @@ let
         };
       };
 
-      chenglou92.rescript-vscode = callPackage ./chenglou92.rescript-vscode { };
+      chenglou92.rescript-vscode = rescriptPackages.rescript-vscode;
 
       chris-hayes.chatgpt-reborn = buildVscodeMarketplaceExtension {
         meta = {

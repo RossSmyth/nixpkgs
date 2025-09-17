@@ -3,8 +3,8 @@
   buildNpmPackage,
   esbuild,
   vsce,
-  src,
-  version,
+  vscode-src,
+  vscode-version,
 }:
 buildNpmPackage (finalAttrs: {
   inherit src version;
@@ -41,4 +41,11 @@ buildNpmPackage (finalAttrs: {
     mkdir -p $out
     vsce package -o "$out/rescript-vscode-${finalAttrs.version}.zip"
   '';
+
+  meta = {
+    description = "VSCode extension archive for ReScript";
+    license = lib.licenses.mit;
+    platforms = lib.platforms.all;
+    maintainers = [ lib.maintainers.RossSmyth ];
+  };
 })

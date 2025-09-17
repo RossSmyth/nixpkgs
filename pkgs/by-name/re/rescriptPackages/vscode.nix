@@ -2,33 +2,26 @@
   lib,
   stdenv,
   vscode-utils,
-  callPackage,
   buildNpmPackage,
+  # rescript packages
+  vscode-src,
+  vscode-version,
+  rescript-vsix,
+  rescript-editor-analysis,
+  platformDir,
 }:
 let
-  rescript-editor-analysis = callPackage ./rescript-editor-analysis.nix { };
-  vsix = callPackage ./vsix.nix { inherit (rescript-editor-analysis) src version; };
-
-  arch =
-    if stdenv.hostPlatform.isLinux then
-      "linux"
-    else if stdenv.hostPlatform.isDarwin then
-      "darwin"
-    else
-      throw "Unsupported system: ${stdenv.system}";
-
-  analysisDir = "server/analysis_binaries/${arch}";
-
+  analysisDir = "server/analysis_binaries/${platformDir}";
 in
 vscode-utils.buildVscodeExtension (finalAttrs: {
-  inherit (rescript-editor-analysis) version;
   pname = "rescript-vscode";
+  version = vscode-version;
 
   vscodeExtPublisher = "chenglou92";
   vscodeExtName = finalAttrs.pname;
   vscodeExtUniqueId = "${finalAttrs.vscodeExtPublisher}.${finalAttrs.pname}";
 
-  src = "${vsix}/rescript-vscode-${finalAttrs.version}.zip";
+  src = "${rescript-vsix}/rescript-vscode-${finalAttrs.version}.zip";
 
   postPatch = ''
     rm -r ${analysisDir}
@@ -41,12 +34,14 @@ vscode-utils.buildVscodeExtension (finalAttrs: {
   meta = {
     description = "Official VSCode plugin for ReScript";
     homepage = "https://github.com/rescript-lang/rescript-vscode";
+    changelog = "https://github.com/rescript-lang/rescript-vscode/releases/tag/${finalAttrs.version}";
+    downloadPage = "https://marketplace.visualstudio.com/items?itemName=chenglou92.rescript-vscode";
     maintainers = with lib.maintainers; [
       dlip
       jayesh-bhoot
       RossSmyth
     ];
-    platforms = with lib.platforms; linux ++ darwin;
+    platforms = lib.platforms.all;
     license = lib.licenses.mit;
   };
 })

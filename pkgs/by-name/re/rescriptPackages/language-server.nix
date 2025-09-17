@@ -2,29 +2,21 @@
   lib,
   stdenv,
   buildNpmPackage,
-  fetchFromGitHub,
   esbuild,
   nix-update-script,
   versionCheckHook,
+  # Package deps
   rescript-editor-analysis,
+  vscode-src,
+  vscode-version,
+  platformDir,
 }:
-let
-  platformDir =
-    if stdenv.hostPlatform.isLinux then
-      "linux"
-    else if stdenv.hostPlatform.isDarwin then
-      "darwin"
-    else if stdenv.hostPlatform.isFreeBSD then
-      "freebsd"
-    else if stdenv.hostPlatform.isWindows then
-      "win32"
-    else
-      throw "Unsupported system: ${stdenv.system}";
-in
 buildNpmPackage (finalAttrs: {
   # These have the same source, and must be the same version.
-  inherit (rescript-editor-analysis) src version;
   pname = "rescript-language-server";
+  version = vscode-version;
+
+  src = vscode-src;
 
   sourceRoot = "source/server";
   npmDepsHash = "sha256-GSlWDOvyqBqDtQWXUkiNVLogeACdQYmqYG0StM0XUq0=";
@@ -67,7 +59,6 @@ buildNpmPackage (finalAttrs: {
     changelog = "https://github.com/rescript-lang/rescript-vscode/releases/tag/${finalAttrs.version}";
     mainProgram = "rescript-language-server";
     license = lib.licenses.mit;
-    # https://github.com/rescript-lang/rescript-vscode/blob/1.62.0/CONTRIBUTING.md?plain=1#L186
     platforms = lib.platforms.all;
     maintainers = with lib.maintainers; [ RossSmyth ];
   };
