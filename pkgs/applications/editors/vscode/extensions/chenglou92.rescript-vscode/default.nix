@@ -3,17 +3,11 @@
   stdenv,
   vscode-utils,
   callPackage,
+  buildNpmPackage,
 }:
 let
-  extVersion = "1.62.0";
   rescript-editor-analysis = callPackage ./rescript-editor-analysis.nix { };
-
-  # Ensure the versions match
-  version =
-    if rescript-editor-analysis.version == extVersion then
-      rescript-editor-analysis.version
-    else
-      throw "analysis and extension versions must match";
+  vsix = callPackage ./vsix.nix { inherit (rescript-editor-analysis) src version; };
 
   arch =
     if stdenv.hostPlatform.isLinux then
@@ -22,34 +16,37 @@ let
       "darwin"
     else
       throw "Unsupported system: ${stdenv.system}";
+
   analysisDir = "server/analysis_binaries/${arch}";
+
 in
+vscode-utils.buildVscodeExtension (finalAttrs: {
+  inherit (rescript-editor-analysis) version;
+  pname = "rescript-vscode";
 
-vscode-utils.buildVscodeMarketplaceExtension {
-  mktplcRef = {
-    name = "rescript-vscode";
-    publisher = "chenglou92";
-    inherit version;
-    hash = "sha256-yUAhysTM9FXo9ZAzrto+tnjnofIUEQAGBg3tjIainrY=";
-  };
+  vscodeExtPublisher = "chenglou92";
+  vscodeExtName = finalAttrs.pname;
+  vscodeExtUniqueId = "${finalAttrs.vscodeExtPublisher}.${finalAttrs.pname}";
 
-  # For rescript-language-server
-  passthru.rescript-editor-analysis = rescript-editor-analysis;
+  src = "${vsix}/rescript-vscode-${finalAttrs.version}.zip";
 
-  strictDeps = true;
   postPatch = ''
     rm -r ${analysisDir}
     ln -s ${rescript-editor-analysis}/bin ${analysisDir}
   '';
 
+  # For rescript-language-server
+  passthru.rescript-editor-analysis = rescript-editor-analysis;
+
   meta = {
     description = "Official VSCode plugin for ReScript";
     homepage = "https://github.com/rescript-lang/rescript-vscode";
-    maintainers = [
-      lib.maintainers.dlip
-      lib.maintainers.jayesh-bhoot
+    maintainers = with lib.maintainers; [
+      dlip
+      jayesh-bhoot
+      RossSmyth
     ];
-    platforms = lib.platforms.linux ++ lib.platforms.darwin;
+    platforms = with lib.platforms; linux ++ darwin;
     license = lib.licenses.mit;
   };
-}
+})

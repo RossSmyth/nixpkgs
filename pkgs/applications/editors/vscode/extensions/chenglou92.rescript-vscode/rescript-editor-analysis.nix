@@ -7,7 +7,7 @@
 
 ocamlPackages.buildDunePackage rec {
   pname = "analysis";
-  version = "1.62.0";
+  version = "1.64.0";
 
   minimalOCamlVersion = "4.10";
 
@@ -15,7 +15,7 @@ ocamlPackages.buildDunePackage rec {
     owner = "rescript-lang";
     repo = "rescript-vscode";
     tag = version;
-    hash = "sha256-Tox5Qq0Kpqikac90sQww2cGr9RHlXnVy7GMnRA18CoA=";
+    hash = "sha256-bDi5UCgeScH28EW18GqqEuZWF4thbiUt53Aj1yCyRkc=";
   };
 
   strictDeps = true;

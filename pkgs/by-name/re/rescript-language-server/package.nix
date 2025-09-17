@@ -26,23 +26,20 @@ buildNpmPackage (finalAttrs: {
   inherit (rescript-editor-analysis) src version;
   pname = "rescript-language-server";
 
-  sourceRoot = "${finalAttrs.src.name}/server";
-
-  npmDepsHash = "sha256-Qi41qDJ0WR0QWw7guhuz1imT51SqI7mORGjNbmZWnio";
+  sourceRoot = "source/server";
+  npmDepsHash = "sha256-GSlWDOvyqBqDtQWXUkiNVLogeACdQYmqYG0StM0XUq0=";
 
   strictDeps = true;
   nativeBuildInputs = [ esbuild ];
 
-  # Tries to do funny things (install all packages for the entire repo) if you don't override it. This is just a copy paste
-  # from the package.json.
-  buildPhase = ''
-    runHook preBuild
+  # Scripts are in the top-level package.json
+  preBuild = "pushd ../";
 
-    # https://github.com/rescript-lang/rescript-vscode/blob/1.62.0/package.json#L252
-    esbuild src/cli.ts --bundle --sourcemap --outfile=out/cli.js --format=cjs --platform=node --loader:.node=file --minify
+  npmRebuildFlags = [ "--ignore-scripts" ];
+  npmBuildScript = "bundle-server";
 
-    runHook postBuild
-  '';
+  # Restore to the server directory for install
+  postBuild = "popd";
 
   postInstall = ''
     DIR="$out/lib/node_modules/@rescript/language-server/analysis_binaries/${platformDir}"
@@ -71,7 +68,7 @@ buildNpmPackage (finalAttrs: {
     mainProgram = "rescript-language-server";
     license = lib.licenses.mit;
     # https://github.com/rescript-lang/rescript-vscode/blob/1.62.0/CONTRIBUTING.md?plain=1#L186
-    platforms = with lib.platforms; linux ++ darwin ++ windows ++ freebsd;
+    platforms = lib.platforms.all;
     maintainers = with lib.maintainers; [ RossSmyth ];
   };
 })
