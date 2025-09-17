@@ -5,18 +5,18 @@
   nix-update-script,
 }:
 
-rustPlatform.buildRustPackage rec {
+rustPlatform.buildRustPackage (finalAttrs: {
   pname = "rewatch";
-  version = "1.0.12";
+  version = "1.2.2";
 
   src = fetchFromGitHub {
     owner = "rescript-lang";
     repo = "rewatch";
-    tag = "v${version}";
-    hash = "sha256-UoUL3zeyrs3FdQVyAo0FsuNiPtiITbuNDdEXxWg3yiY=";
+    tag = "v${finalAttrs.version}";
+    hash = "sha256-HqgAGqT6D9M32PXWB0OlpxBhGu3xeE/GS/qdZ4qS+xU=";
   };
 
-  cargoHash = "sha256-scm2Uv68jN249RH2Fr8ofFjLTOv04wtDKZ5prDl4REU=";
+  cargoHash = "sha256-mhC64l1+gBS7FCkg3s1p1DFf4db177mCzaWCNBCCPYw=";
 
   doCheck = true;
 
@@ -25,9 +25,12 @@ rustPlatform.buildRustPackage rec {
   meta = {
     description = "Alternative build system for the Rescript Compiler";
     homepage = "https://github.com/rescript-lang/rewatch";
-    changelog = "https://github.com/rescript-lang/rewatch/releases/tag/v${version}";
+    changelog = "https://github.com/rescript-lang/rewatch/releases/tag/v${finalAttrs.version}";
     mainProgram = "rewatch";
-    maintainers = with lib.maintainers; [ r17x ];
+    maintainers = with lib.maintainers; [
+      r17x
+      RossSmyth
+    ];
     license = lib.licenses.mit;
   };
-}
+})
