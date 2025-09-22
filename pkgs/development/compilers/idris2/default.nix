@@ -10,7 +10,7 @@ lib.makeScope newScope (
   in
   {
     inherit idris2;
-    idris2Api = callPackage ./idris2-api.nix { };
+    idris2Api = callPackage ./modules/idris2Api { };
     idris2Lsp = callPackage ./idris2-lsp.nix { };
 
     pack = callPackage ./pack.nix { };
