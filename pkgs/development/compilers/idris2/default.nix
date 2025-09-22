@@ -11,7 +11,10 @@ lib.makeScope newScope (
   {
     inherit idris2;
     idris2Api = callPackage ./modules/idris2Api { };
-    idris2Lsp = callPackage ./idris2-lsp.nix { };
+
+    lsp-lib = callPackage ./modules/lsp-lib { };
+    idris2-lsp = callPackage ./modules/idris2-lsp { };
+    idris2Lsp = self.idris2-lsp; # Alias added 2025-09-22
 
     pack = callPackage ./pack.nix { };
 
