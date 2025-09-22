@@ -16,7 +16,10 @@ lib.makeScope newScope (
     idris2-lsp = callPackage ./modules/idris2-lsp { };
     idris2Lsp = self.idris2-lsp; # Alias added 2025-09-22
 
-    pack = callPackage ./pack.nix { };
+    idris2-pack = callPackage ./pack.nix { };
+    pack = self.idris2-pack; # Alias added 2025-09-22
+    toml-idr = callPackage ./modules/toml-idr { };
+    idris2-filepath = callPackage ./modules/idris2-filepath { };
 
     buildIdrisPackage = callPackage ./build-idris.nix { };
     buildIdris = self.buildIdrisPackage; # Alias added 2025-09-22
