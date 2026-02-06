@@ -10,6 +10,8 @@
   mattermost-desktop,
   rocketchat-desktop,
   signal-desktop,
+  bitwarden-desktop,
+  mqtt-explorer,
 }:
 # These must be in buildInputs so that the correct Electron is used, which is the
 # Electron for the host, not the Electron for the build machine, which would be the
@@ -37,6 +39,27 @@
       (
         replaceVars ./electron-wrap-hook.sh {
           ELECTRON_PACKAGE = electron;
+        }
+      );
+  electronBuildHook =
+    makeSetupHook
+      {
+        name = "electron-build-hook";
+
+        passthru.tests = {
+          inherit
+            mattermost-desktop
+            signal-desktop
+            mqtt-explorer
+            bitwarden-desktop
+            ;
+        };
+      }
+      (
+        replaceVars ./electron-build-hook.sh {
+          ELECTRON_DIST = electron.dist;
+          ELECTRON_VERSION = electron.version;
+          ELECTRON_HEADERS = electron.headers;
         }
       );
 }
