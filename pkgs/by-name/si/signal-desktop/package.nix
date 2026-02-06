@@ -109,6 +109,7 @@ stdenv.mkDerivation (finalAttrs: {
   ];
   buildInputs = [
     electron.electronWrapHook
+    electron.electronBuildHook
   ]
   ++ (lib.optional (!withAppleEmojis) noto-fonts-color-emoji-png);
 
@@ -201,25 +202,19 @@ stdenv.mkDerivation (finalAttrs: {
 
     rm -r node_modules/@signalapp/sqlcipher
     cp -r ${signal-sqlcipher} node_modules/@signalapp/sqlcipher
-  '';
 
-  buildPhase = ''
-    runHook preBuild
-
-    export npm_config_nodedir=${electron.headers}
-    cp -r ${electron.dist} electron-dist
-    chmod -R u+w electron-dist
     cp -r ${sticker-creator} sticker-creator/dist
 
     pnpm run generate
-    pnpm exec electron-builder \
-      --linux "dir:${stdenv.hostPlatform.node.arch}" \
-      --config.extraMetadata.environment=$SIGNAL_ENV \
-      -c.electronDist=electron-dist \
-      -c.electronVersion=${electron.version}
-
-    runHook postBuild
   '';
+
+  electronBuildArgs = [
+    "--config.extraMetadata.environment=${finalAttrs.env.SIGNAL_ENV}"
+  ]
+  ++ lib.optionals stdenv.hostPlatform.isLinux [
+    "--linux"
+    "dir:${stdenv.hostPlatform.node.arch}"
+  ];
 
   # Allows stringy or array flags
   electronWrapperArgs =
