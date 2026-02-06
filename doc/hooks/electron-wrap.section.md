@@ -44,6 +44,7 @@ buildNpmPackage (finalAttrs: {
   # Electron running on the host machine
   buildInputs = [
     electron.electronWrapHook
+    electron.electronBuildHook
   ];
 
   env = {
@@ -51,15 +52,7 @@ buildNpmPackage (finalAttrs: {
   };
 
   postBuild = ''
-    cp -r ${electron.dist} electron-dist
-    chmod -R u+w electron-dist
-
-    npm_config_nodedir=${electron.headers} \
-    npm exec electron-builder -- \
-      --config electron-builder.json \
-      --dir \
-      -c.electronDist=electron-dist
-      -c.electronVersion=${electron.version}
+    runHook electronBuildHook
   '';
 
   installPhase = ''
