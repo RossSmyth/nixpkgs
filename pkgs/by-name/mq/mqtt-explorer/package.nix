@@ -54,6 +54,10 @@ stdenv.mkDerivation rec {
   ]
   ++ lib.optionals (!stdenv.hostPlatform.isDarwin) [ copyDesktopItems ];
 
+  buildInputs = [
+    electron.electronBuildHook
+  ];
+
   env.ELECTRON_SKIP_BINARY_DOWNLOAD = "1";
 
   # disable code signing on macos
@@ -86,22 +90,14 @@ stdenv.mkDerivation rec {
 
     patchShebangs {node_modules,app/node_modules,backend/node_modules}
 
-    cp -r ${electron.dist} electron-dist
-    chmod -R u+w electron-dist
-
     runHook postConfigure
   '';
 
-  buildPhase = ''
-    runHook preBuild
-
-    tsc && cd app && yarn --offline run build && cd ..
-
-    yarn --offline run electron-builder --dir \
-      -c.electronDist=electron-dist \
-      -c.electronVersion=${electron.version}
-
-    runHook postBuild
+  preBuild = ''
+    tsc
+    pushd app
+    yarn --offline run build
+    popd
   '';
 
   installPhase = ''
