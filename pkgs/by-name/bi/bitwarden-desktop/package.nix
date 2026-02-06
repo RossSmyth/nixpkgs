@@ -120,6 +120,9 @@ buildNpmPackage' rec {
     xcbuild
     darwin.autoSignDarwinBinariesHook
   ];
+  buildInputs = [
+    electron.electronBuildHook
+  ];
 
   preBuild = ''
     if [[ $(jq --raw-output '.devDependencies.electron' < package.json | grep -E --only-matching '^[0-9]+') != ${lib.escapeShellArg (lib.versions.major electron.version)} ]]; then
@@ -143,18 +146,7 @@ buildNpmPackage' rec {
   '';
 
   postBuild = ''
-    pushd apps/desktop
-
-    # electron-dist needs to be writable on darwin or when using fuses
-    cp -r ${electron.dist} electron-dist
-    chmod -R u+w electron-dist
-
-    npm exec electron-builder -- \
-      --dir \
-      -c.electronDist=electron-dist \
-      -c.electronVersion=${electron.version}
-
-    popd
+    runHook electronBuildHook
   '';
 
   # there seem to be issues with missing libs on darwin when running tests
