@@ -6,12 +6,17 @@
   targetPackages,
   makeBinaryWrapper,
   electron,
+  zip,
   # Test packages
   mattermost-desktop,
   rocketchat-desktop,
   signal-desktop,
   bitwarden-desktop,
   mqtt-explorer,
+  logseq,
+  electron-fiddle,
+  ytmdesktop,
+  ride,
 }:
 # These must be in buildInputs so that the correct Electron is used, which is the
 # Electron for the host, not the Electron for the build machine, which would be the
@@ -60,6 +65,29 @@
           ELECTRON_DIST = electron.dist;
           ELECTRON_VERSION = electron.version;
           ELECTRON_HEADERS = electron.headers;
+        }
+      );
+
+  electronForgeSetupHook =
+    makeSetupHook
+      {
+        name = "electron-forge-setup-hook";
+        propagatedNativeBuildInputs = [
+          zip
+        ];
+        passthru.tests = {
+          inherit
+            logseq
+            electron-fiddle
+            ytmdesktop
+            ride
+            ;
+        };
+      }
+      (
+        replaceVars ./electron-forge-setup-hook.sh {
+          ELECTRON_DIST = electron.dist;
+          ELECTRON_VERSION = electron.version;
         }
       );
 }
