@@ -158,10 +158,20 @@ stdenv.mkDerivation (finalAttrs: {
       clang_20 # newer clang breaks node-addon-api on darwin
     ];
 
+  buildInputs = [
+    electron.electronForgeSetupHook
+  ];
+
   # we'll run the hook manually multiple times
   dontYarnInstallDeps = true;
 
   env.ELECTRON_SKIP_BINARY_DOWNLOAD = "1";
+
+  # We set our own postConfigure and must run it in at at specific time
+  doElectronForgeSetup = false;
+
+  # There are several node_modules. This is the one we want.
+  electronForgeNodeModules = "static/node_modules";
 
   postConfigure = ''
     yarnOfflineCache="$yarnOfflineCacheRoot" yarnConfigHook
@@ -219,17 +229,7 @@ stdenv.mkDerivation (finalAttrs: {
 
     popd
 
-    cp -r ${electron.dist} electron-dist
-    chmod -R u+w electron-dist
-
-    pushd electron-dist
-    zip -0Xqr ../electron.zip .
-    popd
-
-    rm -r electron-dist
-
-    substituteInPlace static/node_modules/@electron/packager/dist/packager.js \
-      --replace-fail "await this.getElectronZipPath(downloadOpts)" "\"$(pwd)/electron.zip\""
+    runHook electronForgeSetupHook
 
     cp -r static/node_modules resources/node_modules
   '';
