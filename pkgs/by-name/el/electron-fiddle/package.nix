@@ -44,22 +44,9 @@ let
       yarnConfigHook
       zip
     ];
-
-    preBuild = ''
-      # electron files need to be writable on Darwin
-      cp -r ${electron.dist} electron-dist
-      chmod -R u+w electron-dist
-
-      pushd electron-dist
-      zip -0Xqr ../electron.zip .
-      popd
-
-      rm -r electron-dist
-
-      # force @electron/packager to use our electron instead of downloading it, even if it is a different version
-      substituteInPlace node_modules/@electron/packager/dist/packager.js \
-        --replace-fail 'await this.getElectronZipPath(downloadOpts)' '"electron.zip"'
-    '';
+    buildInputs = [
+      electron.electronForgeSetupHook
+    ];
 
     yarnBuildScript = "package";
 
