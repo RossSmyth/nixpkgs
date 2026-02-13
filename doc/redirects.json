@@ -99,6 +99,27 @@
   "cuda-writing-tests": [
     "index.html#cuda-writing-tests"
   ],
+  "electron-forge-setup": [
+    "index.html#electron-forge-setup"
+  ],
+  "electron-forge-setup-do": [
+    "index.html#electron-forge-setup-do"
+  ],
+  "electron-forge-setup-examples": [
+    "index.html#electron-forge-setup-examples"
+  ],
+  "electron-forge-setup-exclusive-variables": [
+    "index.html#electron-forge-setup-exclusive-variables"
+  ],
+  "electron-forge-setup-node-modules": [
+    "index.html#electron-forge-setup-node-modules"
+  ],
+  "electron-forge-setup-replace": [
+    "index.html#electron-forge-setup-replace"
+  ],
+  "electron-forge-setup-variables": [
+    "index.html#electron-forge-setup-variables"
+  ],
   "electron-wrap-hook": [
     "index.html#electron-wrap-hook"
   ],

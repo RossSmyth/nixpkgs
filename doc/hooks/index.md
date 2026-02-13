@@ -16,6 +16,7 @@ cernlib.section.md
 cmake.section.md
 desktop-file-utils.section.md
 electron-build.section.md
+electron-forge-setup.section.md
 electron-wrap.section.md
 gdk-pixbuf.section.md
 ghc.section.md
