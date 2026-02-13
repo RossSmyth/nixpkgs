@@ -51,7 +51,10 @@ buildNpmPackage.override { inherit nodejs; } rec {
     copyDesktopItems
   ];
 
-  buildInputs = lib.optionals stdenv.hostPlatform.isLinux [
+  buildInputs = [
+    electron.electronForgeSetupHook
+  ]
+  ++ lib.optionals stdenv.hostPlatform.isLinux [
     libxkbcommon
     libX11
     libXtst
@@ -70,28 +73,18 @@ buildNpmPackage.override { inherit nodejs; } rec {
   };
 
   postConfigure = ''
-    # electron files need to be writable on Darwin
-    cp -r ${electron.dist} electron-dist
-    chmod -R u+w electron-dist
-
-    pushd electron-dist
-    zip -0Xqr ../electron.zip .
-    popd
-
-    rm -r electron-dist
-
-    # force @electron/packager to use our electron instead of downloading it, even if it is a different version
-    substituteInPlace node_modules/@electron/packager/dist/packager.js \
-        --replace-fail 'await this.getElectronZipPath(downloadOpts)' '"electron.zip"'
-
     # don't fetch node headers
     substituteInPlace node_modules/cmake-js/lib/dist.js \
         --replace-fail '!this.downloaded' 'false'
   '';
 
+  # npm rebuild must be sequenced after patching
+  doElectronForgeSetup = false;
+
   # we used --ignore-scripts to have time to patch the dependencies
   # now we'll have to call npm rebuild manually
   preBuild = ''
+    runHook electronForgeSetupHook
     npm rebuild --verbose
   '';
 
