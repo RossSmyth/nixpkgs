@@ -68,26 +68,20 @@ stdenv.mkDerivation (finalAttrs: {
     yarn-berry.yarnBerryConfigHook
     zip
   ];
+  buildInputs = [
+    electron.electronForgeSetupHook
+  ];
 
   # Don't auto-run scripts of dependencies
   # We don't need any native modules, so this is fine
   env.YARN_ENABLE_SCRIPTS = "0";
 
+  # There is some random node_modules directory
+  # to ignore in the yarn directory.
+  electronForgeNodeModules = "node_modules";
+
   buildPhase = ''
     runHook preBuild
-
-    cp -r ${electron.dist} electron-dist
-    chmod -R u+w electron-dist
-
-    pushd electron-dist
-    zip -0Xqr ../electron.zip .
-    popd
-
-    rm -r electron-dist
-
-    # force @electron/packager to use our electron instead of downloading it
-    substituteInPlace node_modules/@electron/packager/dist/packager.js \
-      --replace-fail 'await this.getElectronZipPath(downloadOpts)' '"electron.zip"'
 
     yarn run package
 
