@@ -64,27 +64,18 @@ buildNpmPackage rec {
     makeWrapper
   ]
   ++ lib.optionals stdenv.hostPlatform.isLinux [ copyDesktopItems ];
+  buildInputs = [
+    electron.electronForgeSetupHook
+  ];
+
+  # Only uses @electron/packager, not electron-forge. So
+  # do not need to do the version replacement.
+  electronForgeReplace = false;
 
   env.ELECTRON_SKIP_BINARY_DOWNLOAD = "1";
 
   # our patch adds the platform detecting build option
   npmBuildFlags = "self";
-
-  postConfigure = ''
-    # electron files need to be writable on Darwin
-    cp -r ${electron.dist} electron-dist
-    chmod -R u+w electron-dist
-
-    pushd electron-dist
-    zip -0Xqr ../electron.zip *
-    popd
-
-    rm -r electron-dist
-
-    # force electron-packager to use our electron instead of downloading it, even if it is a different version
-    substituteInPlace node_modules/@electron/packager/dist/packager.js \
-        --replace-fail 'await this.getElectronZipPath(downloadOpts)' '"electron.zip"'
-  '';
 
   installPhase = ''
     runHook preInstall
