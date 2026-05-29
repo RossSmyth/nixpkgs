@@ -1,4 +1,5 @@
 {
+  pkgs,
   lib,
   stdenv,
   buildPackages,
@@ -57,6 +58,13 @@ rustPlatform.buildRustPackage (finalAttrs: {
   + lib.optionalString withPCRE2 ''
     echo '(a(aa)aa)' | ${rg} -P '\((a*|(?R))*\)'
   '';
+
+  passthru.bwrap = {
+    imports = [
+      (lib.modules.importApply ./sandbox.nix { })
+    ];
+    ripgrep.package = finalAttrs.finalPackage;
+  };
 
   meta = {
     description = "Utility that combines the usability of The Silver Searcher with the raw speed of grep";
