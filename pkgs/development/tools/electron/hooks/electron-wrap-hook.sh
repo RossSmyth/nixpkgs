@@ -1,49 +1,48 @@
 # shellcheck shell=bash
 
 electronWrap() {
-  if (( $# < 2 )); then
-    echo "Usage: electronWrap pathToWrap wrapperPath [electronWrapperArgs]"
+  if (( $# < 3 )); then
+    echo "Usage: electronWrap programName pathToWrap wrapperPath [electronWrapperArgs]"
     echo ""
     echo "  Required:"
+    echo "    programName: Name of the wrapper, and the program Electron will execute"
     echo "    pathToWrap: Path that Electron will execute"
-    echo "    wrapperPath: The path that the wrapper will be placed"
+    echo "    wrapperPath: Path that the wrapper will be placed"
     echo ""
     echo "  Optional:"
     echo "    electronWrapperArgs: Addtional arguments that will be appended to the wrapper"
     echo ""
     echo "  Example:"
-    echo '    electronWrap "$out/share/app.asar" "$out/bin/myApp" --set COOL_ENV 1'
+    echo '    electronWrap "myApp" "$out/share/app.asar" "$out/bin/myApp" --set COOL_ENV 1'
     exit 1
   fi
 
   # Required args
-  local -r pathToWrap="$1"
-  local -r wrapperPath="$2"
+  local -r programName="$1"
+  local -r pathToWrap="$2"
+  local -r wrapperPath="$3"
 
   # Pack the rest into the arg array
-  local -ar electronWrapperArgs=("${@:3}")
+  local -ar electronWrapperArgs=("${@:4}")
 
   local -a electronWrapperArgsArray=(
     # Actually launch the Electron program
     "--add-flag" "$pathToWrap"
+    "--inherit-argv0"
   )
-
-  if [[ ! -v electronWrapPackaged || "$electronWrapPackaged" == "1" ]]; then
-    # This branch executes if the attribute is not defined, or is set to true.
-    #
-    # Tell Electron that it is being used in production regardless of how it was built
-    # electron-is-dev also supports this var.
-    electronWrapperArgsArray+=( "--set-default" "ELECTRON_FORCE_IS_PACKAGED" "1" )
-  fi
 
   # Concat user args to the flags array
   concatTo electronWrapperArgsArray electronWrapperArgs
 
-  makeWrapper "@ELECTRON_PACKAGE@/bin/electron" \
+  # Symlink Electron so that it considers itself "packaged"
+  local -r electronLinkPath="$(dirname -- "$pathToWrap")/$programName"
+  ln -s "@ELECTRON_PACKAGE@/bin/electron" "$electronLinkPath"
+
+  makeWrapper "$electronLinkPath" \
     "$wrapperPath" \
     "${electronWrapperArgsArray[@]}"
 
-  echo "wrapped $pathToWrap with Electron using:"
+  echo "wrapped '$pathToWrap' with Electron using:"
 
   local -ra tmp=("$wrapperPath" "${electronWrapperArgsArray[@]}")
   echoCmd "makeWrapper" "${tmp[@]}"
@@ -97,7 +96,7 @@ electronWrapHook() {
   concatTo electronWrapperArgsArray electronWrapperArgs
 
   mkdir -p "${!outputBin}/bin"
-  electronWrap "$pathToWrap" "${!outputBin}/bin/${cmdProgram}" "${electronWrapperArgsArray[@]}"
+  electronWrap "$cmdProgram" "$pathToWrap" "${!outputBin}/bin/$cmdProgram" "${electronWrapperArgsArray[@]}"
 
   echo "electronWrapHook finished."
 }
