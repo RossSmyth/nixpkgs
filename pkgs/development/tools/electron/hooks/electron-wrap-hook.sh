@@ -24,17 +24,10 @@ wrapElectron() {
   local -ar electronWrapperArgs=("${@:3}")
 
   local -a electronWrapperArgsArray=(
-    # Actually launch the Electron program
-    "--add-flag" "$pathToWrap"
+    "--set" "ELECTRON_SHIM_APP_PATH" "$pathToWrap"
+    "--set" "ELECTRON_SHIM_WRAPPER_PATH" "$wrapperPath"
+    "--add-flag" "@ELECTRON_SHIM@"
   )
-
-  if [[ ! -v electronWrapPackaged || "$electronWrapPackaged" == "1" ]]; then
-    # This branch executes if the attribute is not defined, or is set to true.
-    #
-    # Tell Electron that it is being used in production regardless of how it was built
-    # electron-is-dev also supports this var.
-    electronWrapperArgsArray+=( "--set-default" "ELECTRON_FORCE_IS_PACKAGED" "1" )
-  fi
 
   # Concat user args to the flags array
   concatTo electronWrapperArgsArray electronWrapperArgs

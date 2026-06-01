@@ -37,6 +37,8 @@
       (
         replaceVars ./electron-wrap-hook.sh {
           ELECTRON_PACKAGE = electron;
+          # Force this to its own derivation so Nixpkgs' src isn't a dep.
+          ELECTRON_SHIM = builtins.toFile "electron-shim.js" (builtins.readFile ./wrapper.js);
         }
       );
 }
