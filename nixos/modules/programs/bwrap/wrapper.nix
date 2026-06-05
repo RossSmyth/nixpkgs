@@ -13,8 +13,8 @@ in
   _class = "bwrapV1";
 
   imports = [
-    ../../../modules/generic/meta-maintainers.nix
-    ../misc/assertions.nix
+    ../../../../modules/generic/meta-maintainers.nix
+    ../../misc/assertions.nix
   ];
 
   options.bwrap = {

@@ -184,6 +184,7 @@
   ./programs/bcc.nix
   ./programs/benchexec.nix
   ./programs/browserpass.nix
+  ./programs/bwrap/system.nix
   ./programs/calls.nix
   ./programs/captive-browser.nix
   ./programs/ccache.nix
