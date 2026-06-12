@@ -676,11 +676,7 @@ in
           "--chdir"
           ("$(pwd)")
         ]
-        # TODO: Make it more isolated than the entire store
         ++ [
-          "--ro-bind"
-          builtins.storeDir
-          builtins.storeDir
           "--"
           "${cfg.package}/bin/${cfg.executable}"
         ];

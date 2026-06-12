@@ -21,6 +21,12 @@ let
     args:
     let
       wrapCfg = args.bwrap;
+
+      storePaths = pkgs.closureInfo {
+        rootPaths = [
+          wrapCfg.package
+        ];
+      };
     in
     (pkgs.stdenvNoCC.mkDerivation {
       pname = "${wrapCfg.package.pname}-bwrap";
@@ -44,13 +50,18 @@ let
       # Preserve manpages if they exist
       manOutput = lib.getMan wrapCfg.package;
 
+      storePaths = "${storePaths}/store-paths";
+
       bwrapArgs = wrapCfg.commandLine;
       installPhase = ''
         mkdir -p "$out/bin"
 
+        # Read store paths from closureInfo file,
+        readarray -t storePathsArray < "$storePaths"
+
         cat << EOF > "$out/bin/${wrapCfg.package.meta.mainProgram}"
         #!/bin/env bash
-        exec "${lib.getExe cfg.package}" $(printf '"%s" ' "''${bwrapArgs[@]}") "\$@"
+        exec "${lib.getExe cfg.package}" $(for path in "''${storePathsArray[@]}"; do printf -- '"--ro-bind" "%s" "%s" ' "$path" "$path"; done) $(printf -- '"%s" ' "''${bwrapArgs[@]}")"\$@"
         EOF
 
         chmod +x "$out/bin/${wrapCfg.package.meta.mainProgram}"
