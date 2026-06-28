@@ -76,7 +76,17 @@ buildGoModule (finalAttrs: {
     tests = {
       inherit (nixosTests) caddy;
       acme-integration = nixosTests.acme.caddy;
+
+      new-plugins = finalAttrs.passthru.new-plugins {
+        pname = "test";
+        plugins = [
+          "github.com/dunglas/frankenphp/caddy@v1.12.1"
+          "github.com/caddy-dns/powerdns@v1.0.1"
+        ];
+        hash = "sha256-7wYnZXIF4eDrisOrYvwmrww8ZGcGYsAzbQZPjj2eeew=";
+      };
     };
+    new-plugins = callPackage ./new-plugins.nix { };
     withPlugins = callPackage ./plugins.nix { inherit caddy; };
   };
 
