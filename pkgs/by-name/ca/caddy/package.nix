@@ -30,7 +30,8 @@ buildGoModule (finalAttrs: {
     hash = "sha256-QoGq8+lhaSQuC1VwIYE8h8N/ZC1ozfmIwmsIPk29Jos=";
   };
 
-  vendorHash = "sha256-zlwVgSEr01bbgV7N9szwqa9cPjBU34Cu7vqj4/MoSuU=";
+  proxyVendor = true;
+  vendorHash = "sha256-yINMuFstrlOiWZPubCRIpPdrl20AFkjK4Pq186eB1rM=";
 
   ldflags = [
     "-s"
@@ -79,14 +80,24 @@ buildGoModule (finalAttrs: {
 
       new-plugins = finalAttrs.passthru.new-plugins {
         pname = "test";
+        caddyVersion = finalAttrs.version;
         plugins = [
           "github.com/dunglas/frankenphp/caddy@v1.12.1"
           "github.com/caddy-dns/powerdns@v1.0.1"
         ];
-        hash = "sha256-7wYnZXIF4eDrisOrYvwmrww8ZGcGYsAzbQZPjj2eeew=";
+        hash = "sha256-Xfy20UVvhxWOUBvk5RXhCU0cBXYJQKAlunmAwpuawB8=";
+      };
+
+      builder = finalAttrs.passthru.builder {
+        plugins = [
+          "github.com/dunglas/frankenphp/caddy@v1.12.1"
+          "github.com/caddy-dns/powerdns@v1.0.1"
+        ];
+        cachedPlugins = finalAttrs.passthru.tests.new-plugins;
       };
     };
     new-plugins = callPackage ./new-plugins.nix { };
+    builder = callPackage ./builder.nix { caddy = finalAttrs.finalPackage; };
     withPlugins = callPackage ./plugins.nix { inherit caddy; };
   };
 
