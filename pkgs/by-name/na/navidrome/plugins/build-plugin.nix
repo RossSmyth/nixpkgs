@@ -2,7 +2,7 @@
   buildGoModule,
   lib,
   navidrome,
-  zip,
+  navidromeInstallPluginsHook,
 }:
 lib.extendMkDerivation {
   constructDrv = buildGoModule;
@@ -27,10 +27,6 @@ lib.extendMkDerivation {
     {
       __structuredAttrs = true;
 
-      nativeBuildInputs = [
-        zip
-      ];
-
       env = {
         CGO_ENABLED = "0";
       }
@@ -40,25 +36,8 @@ lib.extendMkDerivation {
         "-buildmode=c-shared"
       ];
 
-      installPhase = ''
-        runHook preInstall
-
-        mkdir -p "$out/share/plugins"
-        buildDir="$(mktemp -d)"
-
-        # There should be a single file
-        cp "$GOPATH/bin/"* "$buildDir/plugin.wasm"
-        cp manifest.json "$buildDir"
-
-        pushd "$buildDir"
-
-        zip "$out/share/plugins/${finalAttrs.pname}.ndp" \
-          plugin.wasm \
-          manifest.json
-
-        popd
-
-        runHook postInstall
+      preInstall = ''
+        navidromePlugins="$GOPATH/bin/*"
       '';
 
       passthru = {

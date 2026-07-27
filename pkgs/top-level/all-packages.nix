@@ -2365,6 +2365,7 @@ with pkgs;
   nanoemoji = with python3Packages; toPythonApplication nanoemoji;
 
   buildNavidromePlugin = callPackage ../by-name/na/navidrome/plugins/build-plugin.nix { };
+
   navidromePlugins = recurseIntoAttrs (
     lib.makeExtensible (
       self:
