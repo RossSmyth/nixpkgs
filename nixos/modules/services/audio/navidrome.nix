@@ -8,6 +8,7 @@
 let
   inherit (lib)
     literalExpression
+    mkChangedOptionModule
     mkDefault
     mkEnableOption
     mkPackageOption
@@ -17,6 +18,7 @@ let
   inherit (lib.types)
     addCheck
     bool
+    functionTo
     listOf
     package
     port
@@ -27,6 +29,11 @@ let
   settingsFormat = pkgs.formats.json { };
 in
 {
+  imports = [
+    (mkChangedOptionModule [ "services" "navidrome" "plugins" ] [ "services" "navidrome" "wasmPlugins" ]
+      (config: (w: (map (p: w.${p.pname}) config.services.navidrome.plugins)))
+    )
+  ];
   options = {
     services.navidrome = {
 
@@ -34,33 +41,28 @@ in
 
       package = mkPackageOption pkgs "navidrome" { };
 
-      plugins = mkOption {
-        type = listOf (
-          addCheck package (p: p.isNavidromePlugin or false)
-          // {
-            name = "navidrome plugin";
-            description = "package that is a navidrome plugin";
-          }
-        );
-        default = [ ];
-        description = "List of Navidrome plugins";
-        example = literalExpression ''
-          with pkgs.navidromePlugins; [
-            listenbrainz-daily-playlist
-          ];
+      wasmPlugins = mkOption {
+        type = functionTo (listOf package);
+        description = ''
+          (AttrSet WasmPkgs) -> (List WasmPkgs)
+          Selector function that selects WASM plugins from the
+          Navidrome plugin set.
+
+          The input is an attribute set of WASM-built plugins.
+
+          The output is a selected list of plugins to use.
         '';
+        default = (p: [ ]);
+        defaultText = literalExpression "(p: [ ])";
+        example = literalExpression "(p: [ p.listenbrainz-daily-playlist ])";
       };
 
       finalPackage = mkOption {
         type = package;
         readOnly = true;
-        default = cfg.package.override {
-          inherit (cfg) plugins;
-        };
+        default = cfg.package.withPlugins cfg.wasmPlugins;
         defaultText = literalExpression ''
-          config.services.navidrome.package.override {
-            inherit (config.services.navidrome) plugins;
-          }
+          config.services.navidrome.package.override config.services.navidrome.wasmPlugins;
         '';
         description = "The final navidrome package including all selected plugins.";
       };
