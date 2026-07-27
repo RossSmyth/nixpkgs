@@ -43,7 +43,7 @@ lib.extendMkDerivation {
       installPhase = ''
         runHook preInstall
 
-        mkdir -p "$out/share"
+        mkdir -p "$out/share/plugins"
         buildDir="$(mktemp -d)"
 
         # There should be a single file
@@ -52,7 +52,7 @@ lib.extendMkDerivation {
 
         pushd "$buildDir"
 
-        zip "$out/share/${finalAttrs.pname}.ndp" \
+        zip "$out/share/plugins/${finalAttrs.pname}.ndp" \
           plugin.wasm \
           manifest.json
 

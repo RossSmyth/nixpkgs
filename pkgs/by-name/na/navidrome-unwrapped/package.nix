@@ -9,13 +9,13 @@
   npmHooks,
   pkg-config,
   stdenv,
-  ffmpeg-headless,
   taglib,
   zlib,
   nixosTests,
   nix-update-script,
-  ffmpegSupport ? true,
   versionCheckHook,
+  navidrome,
+  pkgsCross,
 }:
 
 buildGoModule (finalAttrs: {
@@ -86,6 +86,12 @@ buildGoModule (finalAttrs: {
   doInstallCheck = true;
 
   passthru = {
+    withPlugins =
+      f:
+      navidrome.override {
+        navidrome-unwrapped = finalAttrs.finalPackage;
+        plugins = f pkgsCross.wasi32.navidromePlugins;
+      };
     tests.navidrome = nixosTests.navidrome;
     updateScript = nix-update-script { };
   };
