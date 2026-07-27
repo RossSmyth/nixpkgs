@@ -36,13 +36,9 @@ lib.extendMkDerivation {
       }
       // env;
 
-      postBuild = ''
-        GOOS=wasip1 \
-        GOARCH=wasm \
-        go build \
-          -buildmode=c-shared \
-          -o "./plugin.wasm" .
-      '';
+      buildFlags = [
+        "-buildmode=c-shared"
+      ];
 
       installPhase = ''
         runHook preInstall
@@ -50,7 +46,8 @@ lib.extendMkDerivation {
         mkdir -p "$out/share"
         buildDir="$(mktemp -d)"
 
-        cp "./plugin.wasm" "$buildDir"
+        # There should be a single file
+        cp "$GOPATH/bin/"* "$buildDir/plugin.wasm"
         cp manifest.json "$buildDir"
 
         pushd "$buildDir"
