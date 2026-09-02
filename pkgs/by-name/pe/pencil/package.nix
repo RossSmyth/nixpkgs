@@ -146,5 +146,8 @@ stdenv.mkDerivation (finalAttrs: {
       mrVanDalo
     ];
     platforms = lib.platforms.linux;
+    knownVulverabilities = [
+      "Uses Electron 6, EOL in May 2020 with many CVEs"
+    ];
   };
 })
