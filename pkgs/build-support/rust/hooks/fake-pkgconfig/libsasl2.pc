@@ -1,0 +1,7 @@
+# https://github.com/MaterializeInc/rust-sasl/blob/f0a3c3050256c4ed35dec29e22e8547738fa7f4b/sasl2-sys/build.rs#L290
+Name: SASL
+Description: fake SASL pkgconfig
+Version: 2.0
+Libs: -lsasl2 -L/sasl/lib
+Cflags: -I/sasl/include
+

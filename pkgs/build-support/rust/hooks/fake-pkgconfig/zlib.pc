@@ -1,0 +1,6 @@
+# https://github.com/rust-lang/libz-sys/blob/595fbb7995b2c5e15371963103d33192fd066857/build.rs#L47
+Name: zlib
+Description: fake zlib
+Version: 1.0
+Libs: -lz -L/zlib/lib
+Cflags: -I/zlib/include

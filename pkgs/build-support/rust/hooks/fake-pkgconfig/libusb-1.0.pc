@@ -1,0 +1,7 @@
+# https://github.com/a1ien/rusb/blob/bb17ee31e4d3e658b9bfad638d7b5e7c42e94864/libusb1-sys/build.rs#L57
+Name: libusb-1.0
+Description: fake libusb
+Version: 1.0
+Libs: -lusb-1.0 -L/usb/lib
+Cflags: -I/usb/include
+

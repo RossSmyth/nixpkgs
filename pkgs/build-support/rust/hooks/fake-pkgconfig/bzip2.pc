@@ -1,0 +1,7 @@
+# https://github.com/trifectatechfoundation/bzip2-rs/blob/57f97219b90dac2ac6f0f62745e900dde0d48fde/bzip2-sys/build.rs#L22
+Name: bzip2
+Description: fake bzip2
+Version: 1.0
+Libs: -L/bzip2/lib -lbz2
+Cflags: -I/bzip2/include
+

@@ -1,0 +1,6 @@
+# https://github.com/servo/libexpat/blob/f5c5e8129c035aa43c4c4489bfc395ba0ac36fda/build.rs#L13
+Name: expat
+Version: 2.0
+Description: fake xpat
+Libs: -lexpat -L/expat/lib
+Cflags: -I/expat/include

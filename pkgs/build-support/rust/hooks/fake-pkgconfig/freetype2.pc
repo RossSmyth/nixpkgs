@@ -1,0 +1,7 @@
+# https://github.com/servo/libexpat/blob/f5c5e8129c035aa43c4c4489bfc395ba0ac36fda/build.rs#L13
+Name: FreeType 2
+Description: fake freetype2
+Version: 20.0.15
+Libs: -L/freetype/lib -lfreetype
+Cflags: -I/freetype/freetype2
+

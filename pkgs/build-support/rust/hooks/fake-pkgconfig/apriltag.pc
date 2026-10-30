@@ -1,0 +1,7 @@
+Name: apriltag
+# https://github.com/jerry73204/apriltag-rust/blob/9e7ce5a0dd9f2d178225a436b05944bf01b17438/apriltag-sys/build.rs#L74
+Description: fake AprilTag, needs to set APRILTAG_SYS_METHOD=pkg-config as well
+Version: 3.0
+Libs: -L/apriltag/lib -lapriltag
+Cflags: -I/apriltag/include
+

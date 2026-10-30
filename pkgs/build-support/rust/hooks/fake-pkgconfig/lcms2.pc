@@ -1,0 +1,6 @@
+# https://github.com/kornelski/rust-lcms2-sys/blob/0e8cfd20b44da916550902e72327d2bdc7467d97/src/build.rs#L29
+Name: lcms2
+Description: fake lcms2
+Version: 2.0
+Libs: -llcms2 -L/lcms2/lib
+Cflags: -I/lcms2/include

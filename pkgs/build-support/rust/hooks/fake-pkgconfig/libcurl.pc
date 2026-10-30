@@ -1,0 +1,7 @@
+# https://github.com/sagebind/curl-rust/blob/2fb602bb1d3a34ded4548cbe8a7c7202b1ab4ba2/curl-sys/build.rs#L593
+Name: libcurl
+Description: fake libcurl
+Version: 8.0
+Libs: -lcurl -L/libcurl/lib
+Cflags: -I/libcurl/include
+

@@ -1,0 +1,6 @@
+# https://github.com/libdeflater/libdeflater/blob/260e1e9a333e32e769855c1ad1f203289e0a3c8d/libdeflate-sys/build.rs#L9
+Name: libdeflate
+Description: fake libdeflate
+Version: 1.23
+Libs: -ldeflate -L/libdeflate/lib
+Cflags: -I/libdeflate/include

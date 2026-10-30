@@ -1,0 +1,7 @@
+# https://github.com/alexcrichton/xz2-rs/blob/1a82c40d6d80171b7df328aea43b7054acd10c44/lzma-sys/build.rs#L21
+# https://github.com/Portable-Network-Archive/liblzma-rs/blob/483495ee35af8aab6a6c61207198e8ee152fd13d/liblzma-sys/build.rs#L28
+Name: liblzma
+Description: fake liblzma module
+Version: 5.8.0
+Cflags: -I/xz/include
+Libs: -llzma -L/xz/lib

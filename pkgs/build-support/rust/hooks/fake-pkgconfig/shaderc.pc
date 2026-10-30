@@ -1,0 +1,6 @@
+# https://github.com/google/shaderc-rs/blob/78e480d4ef3471b0ddec5ff093c52fdcdd90cadf/shaderc-sys/build/build.rs#L217
+Name: shaderc
+Description: fake shaderc
+Version: 2026.1.1
+Libs: -lshaderc -L/shaderc/include
+Cflags: -I/shaderc/include

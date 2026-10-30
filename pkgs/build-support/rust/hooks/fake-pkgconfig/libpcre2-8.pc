@@ -1,0 +1,6 @@
+# https://github.com/BurntSushi/rust-pcre2/blob/9f269262a71d88605c67bd3fcc8633970aa6ad81/pcre2-sys/build.rs#L33
+Name: libpcre2-8
+Description: fake pcre2
+Version: 10.0
+Libs: -lpcre2-8 -L/pcre2/lib
+Cflags: -I/pcre2/include

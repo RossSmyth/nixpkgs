@@ -1,0 +1,6 @@
+# https://github.com/danburkert/lmdb-rs/blob/c64f0b4f8280190525a6430388e714739f18976b/lmdb-sys/build.rs#L13
+Name: lmdb
+Description: fake lmdb
+Version: 0.9
+Cflags: -I/lmdb/include
+Libs: -L/lmdb/lib -llmdb

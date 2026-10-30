@@ -1,0 +1,6 @@
+# https://github.com/qnighy/libwebp-sys2-rs/blob/fc5097f15a435f98021cc04895235b84370ca247/build.rs#L27
+Name: libwebp
+Description: fake libwebp
+Version: 1.6.0
+Cflags: -I/webp/include
+Libs: -L/webp/lib -lwebp

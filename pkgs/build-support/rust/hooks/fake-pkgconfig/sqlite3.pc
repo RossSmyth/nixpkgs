@@ -1,0 +1,7 @@
+https://github.com/google/shaderc-rs/blob/78e480d4ef3471b0ddec5ff093c52fdcdd90cadf/shaderc-sys/build/build.rs#L217
+Name: SQLite
+Description: fake sqlite
+Version: 3.0
+Libs: -L/sqlite/lib -lsqlite3
+Cflags: -I/sqlite/include
+
