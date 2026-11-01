@@ -70,6 +70,7 @@ lib.extendMkDerivation {
       auditable ? !cargo-auditable.meta.broken,
 
       depsExtraArgs ? { },
+      cargoUpdates ? { },
 
       # Needed to `pushd`/`popd` into a subdir of a tarball if this subdir
       # contains a Cargo.toml, but isn't part of a workspace (which is e.g. the
@@ -86,6 +87,8 @@ lib.extendMkDerivation {
     assert lib.warnIf (args ? useFetchCargoVendor)
       "buildRustPackage: `useFetchCargoVendor` is non‐optional and enabled by default as of 25.05, remove it"
       true;
+
+    assert lib.assertMsg ((cargoUpdates != {}) -> (args.__structuredAttrs or false)) "cargoUpdates requires __structuredAttrs";
     {
       env =
         let
@@ -124,6 +127,7 @@ lib.extendMkDerivation {
               "preUnpack"
               "unpackPhase"
               "postUnpack"
+              "cargoUpdates"
             ] finalAttrs
             // {
               ${if cargoDepsName != null then "name" else null} = cargoDepsName;

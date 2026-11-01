@@ -63,6 +63,7 @@ in
   name ? if args ? pname && args ? version then "${args.pname}-${args.version}" else "cargo-deps",
   hash ? (throw "fetchCargoVendor requires a `hash` value to be set for ${name}"),
   nativeBuildInputs ? [ ],
+  cargoUpdates ? {},
   ...
 }@args:
 
@@ -78,6 +79,7 @@ let
       nativeBuildInputs = [
         fetchCargoVendorUtil
         cacert
+        cargo
         nix-prefetch-git'
       ]
       ++ nativeBuildInputs;
@@ -88,6 +90,10 @@ let
         if [ -n "''${cargoRoot-}" ]; then
           cd "$cargoRoot"
         fi
+
+        for package in "''${!cargoUpdates[@]}"; do
+          cargo update --precise "''${cargoUpdates["$package"]}" "$package"
+        done
 
         fetch-cargo-vendor-util create-vendor-staging ./Cargo.lock "$out"
 
