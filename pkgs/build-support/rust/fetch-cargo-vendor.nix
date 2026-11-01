@@ -94,6 +94,7 @@ let
         for package in "''${!cargoUpdates[@]}"; do
           cargo update --precise "''${cargoUpdates["$package"]}" "$package"
         done
+        cargo update --dry-run
 
         fetch-cargo-vendor-util create-vendor-staging ./Cargo.lock "$out"
 
