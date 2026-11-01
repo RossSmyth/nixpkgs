@@ -20,8 +20,16 @@ rustPlatform.buildRustPackage (finalAttrs: {
     hash = "sha256-X3yrZUBieMO5bauUu2mskfvicLRdQcjbXouFTpz+0eQ=";
   };
 
-  cargoHash = "sha256-5ijtWSsHn7ii8+1njwyvyj387FQkMQALKbixkr/nSkk=";
+  cargoHash = "sha256-JaSpZKquIEfFzxC9954gMTXIsr2HaP99Mu4CVQs8T/s=";
+  cargoUpdates = {
+    "crossbeam-epoch" = "0.9.20";
+  };
 
+  postPatch = ''
+      cp "$cargoDeps/Cargo.lock" ./Cargo.lock
+    '';
+
+  __structuredAttrs = true;
   nativeBuildInputs = [ installShellFiles ];
 
   buildInputs = [ rust-jemalloc-sys ];
