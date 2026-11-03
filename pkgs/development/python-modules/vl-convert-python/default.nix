@@ -5,6 +5,8 @@
   rustPlatform,
   protobuf,
   libffi,
+  pkg-config,
+  sqlite,
   callPackage,
   librusty_v8 ? callPackage ./librusty_v8.nix { },
   nix-update-script,
@@ -37,9 +39,9 @@ buildPythonPackage rec {
     rustPlatform.cargoSetupHook
   ];
 
-  nativeBuildInputs = [ protobuf ];
+  nativeBuildInputs = [ protobuf pkg-config ];
 
-  buildInputs = [ libffi ];
+  buildInputs = [ libffi sqlite ];
 
   pythonImportsCheck = [ "vl_convert" ];
 
