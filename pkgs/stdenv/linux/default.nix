@@ -704,6 +704,20 @@ in
           prevStage.patchelf
           # Many tarballs come with obsolete config.sub/config.guess that don't recognize aarch64.
           prevStage.updateAutotoolsGnuConfigScriptsHook
+          (prevStage.autoPatchPkgConfigHook.override {
+            pkgconf = import ../../build-support/pkg-config-wrapper {
+              inherit lib;
+              inherit (prevStage)
+                buildPackages
+                stdenvNoCC
+                makeSetupHook
+                replaceVars
+                expand-response-params
+                ;
+              pkg-config = prevStage.pkgconf-lite;
+              baseBinName = "pkgconf";
+            };
+          })
         ];
 
         cc = prevStage.gcc;
