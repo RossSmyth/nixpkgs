@@ -92,6 +92,10 @@ lib.init bootStages
               buildPackages.targetPackages.apple-sdk
             ];
 
+            extraNativeBuildInputs = [
+              buildPackages.autoPatchPkgConfigHook
+            ];
+
             hasCC = !stdenvNoCC.targetPlatform.isGhcjs;
 
             cc =
