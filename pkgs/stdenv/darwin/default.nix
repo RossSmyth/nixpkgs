@@ -982,6 +982,7 @@ assert bootstrapTools.passthru.isFromBootstrapFiles or false; # sanity check
 
         extraNativeBuildInputs = lib.optionals localSystem.isAarch64 [
           prevStage.updateAutotoolsGnuConfigScriptsHook
+          prevStage.autoPatchPkgConfigHook
         ];
 
         extraBuildInputs = [ prevStage.apple-sdk ];
